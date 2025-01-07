@@ -8,7 +8,7 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Initialize OpenAI client
-client = OpenAI()
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Directory containing the PDFs
 PDF_MINUTES = '/Users/arturoavalos/Documents/FED_chat/pdfs'
