@@ -6,3 +6,4 @@ streamlit
 PyPDF2
 numpy
 openai
+python-dotenv
