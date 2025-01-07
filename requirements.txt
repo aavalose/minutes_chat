@@ -1,0 +1,9 @@
+os
+requests
+bs4
+datetime
+lxml
+streamlit
+PyPDF2
+numpy
+openai
