@@ -7,6 +7,10 @@ from src.similarity import search_relevant_chunks
 from src.openai_utils import ask_openai
 from config import PDF_MINUTES  # Make sure this import is present too
 
+# Ensure the PDF_MINUTES directory exists
+if not os.path.exists(PDF_MINUTES):
+    os.makedirs(PDF_MINUTES)
+
 st.title("FOMC Minutes Analysis Assistant")
 st.markdown("""
 This tool helps you analyze Federal Open Market Committee (FOMC) meeting minutes.
