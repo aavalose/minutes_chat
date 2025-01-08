@@ -18,4 +18,4 @@ openai.api_key = OPENAI_API_KEY
 client = openai
 
 # Directory containing the PDFs
-PDF_MINUTES = '/Users/arturoavalos/Documents/FED_chat/pdfs'
+PDF_MINUTES = 'pdfs'
