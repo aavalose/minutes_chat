@@ -60,7 +60,7 @@ def display_pdf(pdf_path):
             loadingTask.promise.then(function(pdf) {{
                 for (var pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {{
                     pdf.getPage(pageNumber).then(function(page) {{
-                        var scale = 0.8;
+                        var scale = 1.0;
                         var viewport = page.getViewport({{scale: scale}});
                         var canvas = document.createElement('canvas');
                         canvas.className = 'pdf-page';
