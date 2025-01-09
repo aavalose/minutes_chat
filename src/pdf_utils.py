@@ -31,7 +31,7 @@ def extract_text_from_pdf(pdf_path):
     return text
 
 def display_pdf(pdf_path):
-    # Readthe PDF file
+    # Read the PDF file
     with open(pdf_path, "rb") as f:
         base64_pdf = base64.b64encode(f.read()).decode('utf-8')
 
@@ -40,26 +40,41 @@ def display_pdf(pdf_path):
     <html>
     <head>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js"></script>
+        <style>
+            #pdf-container {{
+                height: 800px;
+                overflow-y: auto;
+                border: 1px solid #ccc;
+            }}
+            .pdf-page {{
+                margin-bottom: 10px;
+            }}
+        </style>
     </head>
     <body>
-        <canvas id="pdf-canvas" width="600" height="800"></canvas>
+        <div id="pdf-container"></div>
         <script>
             var pdfData = atob("{base64_pdf}");
             var loadingTask = pdfjsLib.getDocument({{data: pdfData}});
             loadingTask.promise.then(function(pdf) {{
-                pdf.getPage(1).then(function(page) {{
-                    var scale = 1.5;
-                    var viewport = page.getViewport({{scale: scale}});
-                    var canvas = document.getElementById('pdf-canvas');
-                    var context = canvas.getContext('2d');
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-                    var renderContext = {{
-                        canvasContext: context,
-                        viewport: viewport
-                    }};
-                    page.render(renderContext);
-                }});
+                for (var pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {{
+                    pdf.getPage(pageNumber).then(function(page) {{
+                        var scale = 1.5;
+                        var viewport = page.getViewport({{scale: scale}});
+                        var canvas = document.createElement('canvas');
+                        canvas.className = 'pdf-page';
+                        var context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        document.getElementById('pdf-container').appendChild(canvas);
+                        var renderContext = {{
+                            canvasContext: context,
+                            viewport: viewport
+                        }};
+                        page.render(renderContext);
+                    }});
+                }}
             }});
         </script>
     </body>
