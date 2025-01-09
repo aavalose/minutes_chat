@@ -31,8 +31,40 @@ def extract_text_from_pdf(pdf_path):
     return text
 
 def display_pdf(pdf_path):
-    # Adjust the size to prevent overlap
+    # Readthe PDF file
     with open(pdf_path, "rb") as f:
         base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="800" type="application/pdf"></iframe>'
-    st.markdown(pdf_display, unsafe_allow_html=True)
+
+    # HTML template to render PDF using pdf.js
+    pdf_display = f"""
+    <html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    </head>
+    <body>
+        <canvas id="pdf-canvas" width="600" height="800"></canvas>
+        <script>
+            var pdfData = atob("{base64_pdf}");
+            var loadingTask = pdfjsLib.getDocument({{data: pdfData}});
+            loadingTask.promise.then(function(pdf) {{
+                pdf.getPage(1).then(function(page) {{
+                    var scale = 1.5;
+                    var viewport = page.getViewport({{scale: scale}});
+                    var canvas = document.getElementById('pdf-canvas');
+                    var context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    var renderContext = {{
+                        canvasContext: context,
+                        viewport: viewport
+                    }};
+                    page.render(renderContext);
+                }});
+            }});
+        </script>
+    </body>
+    </html>
+    """
+
+    # Display the PDF using Streamlit's HTML component
+    st.components.v1.html(pdf_display, height=800, width=600)
